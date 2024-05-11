@@ -41,6 +41,21 @@ app.get("/api/product/:id", async (req, res) => {
   }
 });
 
+//updation of data in DB
+app.put("/api/product/:id", async (req, res) => {
+  try {
+    const { id } = req.params;
+    const product = await Product.findByIdAndUpdate(id, req.body);
+    if (!product) {
+      return res.status(404).json({ message: "Product not Found!" });
+    }
+    const updatedProduct = await Product.findById(id);
+    res.status(200).json(updatedProduct);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+});
+
 mongoose
   .connect(
     "mongodb+srv://prashantsingh:ocQmBTHDn4PSS7Ou@backenddb.cupgd2n.mongodb.net/Node-API?retryWrites=true&w=majority&appName=BackendDB"
