@@ -5,6 +5,7 @@ const app = express();
 
 //middleware
 app.use(express.json());
+app.use(express.urlencoded({ extended: false }));
 
 app.get("/", (req, res) => {
   res.send("hello from the server api!");
@@ -51,6 +52,22 @@ app.put("/api/product/:id", async (req, res) => {
     }
     const updatedProduct = await Product.findById(id);
     res.status(200).json(updatedProduct);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+});
+
+//deletion of data in
+
+app.delete("/api/product/:id", async (req, res) => {
+  try {
+    const { id } = req.params;
+    const product = await Product.findByIdAndDelete(id);
+    if (!product) {
+      return res.status(404).json({ message: "Product not Found" });
+    }
+
+    res.status(200).json({ message: "Deleted item..." });
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
